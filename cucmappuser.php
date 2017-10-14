@@ -81,6 +81,8 @@
         }
     }
 
+    writeLog();
+
     if (count($failed) > 0) {
         exit("Script finished with ERROR : " .count($failed) . " records failed - see log file \n");
     } else {
