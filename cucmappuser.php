@@ -5,9 +5,9 @@
     $host = $conf['host'];
     $username = $conf['username'];
     $password = $conf['password'];
-if (!isset($argv[1]) || !isset($argv[2]) || !in_array($argv[2], ["add","del"])) {
-    die("ERROR: Missing parameters, check if you specify appuser and action('add','del')");
-}
+    if (!isset($argv[1]) || !isset($argv[2]) || !in_array($argv[2], ["add","del"])) {
+        die("ERROR: Missing parameters, check if you specify appuser and action('add','del')");
+    }
     $appUser = $argv[1];
     $action = $argv[2];
     $userExists = false;
@@ -50,7 +50,7 @@ if (!isset($argv[1]) || !isset($argv[2]) || !in_array($argv[2], ["add","del"])) 
         }
     }
     if (!$userExists) {
-        die("ERROR: Check if appuser : $appUser exists in CUCM !");
+        die("ERROR: Check if appuser : $appUser exists in CUCM ! \n");
     }
     
     // Make folder with appuser name - there will be logs.
@@ -61,16 +61,16 @@ if (!isset($argv[1]) || !isset($argv[2]) || !in_array($argv[2], ["add","del"])) 
     writeAppUserDataBeforeUpdate();
 
     $num_of_proccessed_phones = 0;
-    $success=[];
-    $failed=[];
+    $success = array();
+    $failed = array();
 
     foreach ($phones as $phone) {
         if ($action == "add") {
-            $sql = "insert into applicationuserdevicemap (fkapplicationuser, fkdevice, tkuserassociation) select au.pkid, d.pkid, 1 from 		applicationuser au cross join device d where au.name = '$appUser' and d.name = '$phone' and
-	       		d.pkid not in (select fkdevice from applicationuserdevicemap where fkapplicationuser = au.pkid )";
+            $sql = "insert into applicationuserdevicemap (fkapplicationuser, fkdevice, tkuserassociation) select au.pkid, d.pkid, 1 from 		 applicationuser au cross join device d where au.name = '$appUser' and d.name = '$phone' and
+	       		        d.pkid not in (select fkdevice from applicationuserdevicemap where fkapplicationuser = au.pkid )";
         }
         if ($action == "del") {
-            $sql = "delete from applicationuserdevicemap where 	fkapplicationuser = (select pkid from applicationuser au where 		au.name = '$appUser') and fkdevice in (select pkid from device d where d.name = '$phone')" ;
+            $sql = "delete from applicationuserdevicemap where 	fkapplicationuser = (select pkid from applicationuser au where 	        	   au.name = '$appUser') and fkdevice in (select pkid from device d where d.name = '$phone')" ;
         }
           
         $response = $client->executeSQLUpdate(array("sql" => $sql));
@@ -82,9 +82,9 @@ if (!isset($argv[1]) || !isset($argv[2]) || !in_array($argv[2], ["add","del"])) 
     }
 
     if (count($failed) > 0) {
-        exit("Script finished with ERROR : " .count($failed) . " records failed - see log file");
+        exit("Script finished with ERROR : " .count($failed) . " records failed - see log file \n");
     } else {
-        exit("Script finished SUCCESSFULLY : " .count($success) . " records updated");
+        exit("Script finished SUCCESSFULLY : " .count($success) . " records updated \n");
     }
  
     
@@ -109,7 +109,7 @@ if (!isset($argv[1]) || !isset($argv[2]) || !in_array($argv[2], ["add","del"])) 
         //check if there was phones associated with this appuse
         if (isset($response->return->row)) {
             $phones = $response->return->row;
-            var_dump($phones);
+            //var_dump($phones);
             $myfile = fopen("$appUser".DIRECTORY_SEPARATOR."beforeLastUpdate.txt", "w");
             foreach ($phones as $phone) {
                 fwrite($myfile, $phone->name ."\n");

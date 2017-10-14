@@ -1,7 +1,0 @@
-10-10-2017 09:38:23
-
-Number of succesful records : 0
-
-Number of failed records : 2
-SEP0C116781ACBE
-SEP0C116781ACDE
